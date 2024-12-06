@@ -7,13 +7,9 @@ from urllib.request import urlopen
 
 AUTH0_DOMAIN = 'azy-coffeeshop.au.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'image'
+API_AUDIENCE = 'fsnd-image'
 
 ## AuthError Exception
-'''
-AuthError Exception
-A standardized way to communicate auth failure modes
-'''
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
@@ -84,8 +80,8 @@ def verify_decode_jwt(token):
     if 'kid' not in unverified_header:
         raise AuthError(
             error={
-            'code': 'invalid_header',
-            'description': 'Authorization malformed.'
+                'code': 'invalid_header',
+                'description': 'Authorization malformed.'
             },
             status_code=401
         )
@@ -110,30 +106,40 @@ def verify_decode_jwt(token):
                 issuer='https://' + AUTH0_DOMAIN + '/'
             )
 
+            # Check for issued-at claim
+            if 'iat' not in payload:
+                raise AuthError(
+                    error={
+                        'code': 'invalid_claims',
+                        'description': 'Issued-at claim is missing.'
+                    },
+                    status_code=401
+                )
+
             return payload
 
         except jwt.ExpiredSignatureError:
             raise AuthError(
                 error={
-                'code': 'token_expired',
-                'description': 'Token expired.'
-                }, 
+                    'code': 'token_expired',
+                    'description': 'Token expired.'
+                },
                 status_code=401
             )
 
         except jwt.JWTClaimsError:
             raise AuthError(
                 error={
-                'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, check the audience and issuer.'
-                }, 
+                    'code': 'invalid_claims',
+                    'description': 'Incorrect claims. Please, check the audience and issuer.'
+                },
                 status_code=401
             )
         except Exception:
             raise AuthError(
                 error={
-                'code': 'invalid_header',
-                'description': 'Unable to parse authentication token.'
+                    'code': 'invalid_header',
+                    'description': 'Unable to parse authentication token.'
                 },
                 status_code=400
             )

@@ -9,7 +9,7 @@ migrate = Migrate()
 
 def setup_db(app, database_path=None):
     if database_path is None:
-        database_path = os.environ['DATABASE_PATH']
+        database_path = os.getenv('DATABASE_PATH')
     app.config['SQLALCHEMY_DATABASE_URI'] = database_path
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
