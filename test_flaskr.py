@@ -10,9 +10,7 @@ class CapstoneAppTestCase(unittest.TestCase):
         
     def setUp(self):
         """Define test variables and initialize app."""
-        self.database_path = os.environ.get('DATABASE_PATH')
-        if self.database_path is None:
-            self.database_path = 'postgresql://dattran@localhost:5432/fsnd_capstone'
+        self.database_path = os.environ.get('DATABASE_URL')
         self.app = create_app({
             "SQLALCHEMY_DATABASE_URI": self.database_path
         })

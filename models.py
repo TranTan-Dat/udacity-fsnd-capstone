@@ -5,11 +5,14 @@ from flask_migrate import Migrate
 
 db = SQLAlchemy()
 migrate = Migrate()
+database_path = os.environ['DATABASE_URL']
+if database_path.startswith("postgres://"):
+  database_path = database_path.replace("postgres://", "postgresql://", 1)
+
+db = SQLAlchemy()
 
 
-def setup_db(app, database_path=None):
-    if database_path is None:
-        database_path = os.getenv('DATABASE_PATH')
+def setup_db(app, database_path=database_path):
     app.config['SQLALCHEMY_DATABASE_URI'] = database_path
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
