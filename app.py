@@ -26,8 +26,20 @@ def create_app(test_config=None):
     
     @app.route('/', methods=['GET'])
     def health_check():
+        page = request.args.get('page', 1, type=int)
+        start = (page - 1) * QUESTIONS_PER_PAGE
+        end = start + QUESTIONS_PER_PAGE
+        movies = Movie.query.all()
+        result = len(movies)
+        if start >= result:
+            return jsonify({
+                'success': True,
+                'movies': []  # Fixed typo 'modvies'
+            })
+        result = movies[start:end]
         return jsonify({
             'success': True,
+            'movies': [movie.format() for movie in result],
             'description': 'Capstone App is running successfully!!!'
         })
 
